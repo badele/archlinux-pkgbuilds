@@ -1,0 +1,46 @@
+# Maintainer: Bruno Adele <bruno.adele#jesuislibre.org>
+pkgname=mochad
+pkgver=0.1.16
+pkgrel=1
+pkgdesc="Linux TCP gateway daemon for the X10 CM15A RF (radio frequency) and the CM19A RF controller."
+arch=('i686' 'x86_64')
+_extramodules=extramodules-3.3-ARCH
+url="http://sourceforge.net/projects/mochad/"
+license=('GPL')
+groups=()
+depends=(libusbx)
+makedepends=('gcc') #base-devel
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=(http://downloads.sourceforge.net/sourceforge/$pkgname/$pkgname-$pkgver.tar.gz mochad.rc.d 91-usb-x10-controllers.rules)
+noextract=()
+sha256sums=('6e7e5b953ae1350e246fd50b87a1b1a0ea628a4a66f641117a1d2521e0a309ec'
+            'ab87c2d6728b09caf0d39180408129f369ed105283716f4f9e6af1a880492326'
+            'ee72876ccf588c8ae2e6fc0ebaea1cf5d0cc462b84753879fca5c6cf76dbc323')
+build() {
+	FIX=1
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure
+	make
+}
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	install -d "$pkgdir/usr/sbin"
+	install -D mochad "$pkgdir/usr/sbin/mochad"
+
+	install -d "$pkgdir/etc/udev/rules.d"
+	install -D $startdir/91-usb-x10-controllers.rules "$pkgdir/etc/udev/rules.d/91-usb-x10-controllers.rules"
+
+#	install -d "$pkgdir/etc/hotplug.d/usb"
+#	install -D hotplug2/20-usb-x10 "$pkgdir/etc/hotplug.d/usb/20-usb-x10"
+#	install -D $startdir/mochad.rc.d "$pkgdir/etc/rc.d/mochad"
+}
+

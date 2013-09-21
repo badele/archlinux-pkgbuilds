@@ -1,0 +1,10 @@
+--- src/cbcutycapt/CutyCapt.hpp	2013-09-21 08:49:51.200274293 +0000
++++ CutyCapt.hpp	2013-09-21 09:03:02.073670068 +0000
+@@ -1,4 +1,7 @@
+ #include <QtWebKit>
++#include <QNetworkReply>
++#include <QSslError>
++#include <QNetworkProxy>
+ 
+ class CutyCapt;
+ class CutyPage : public QWebPage {

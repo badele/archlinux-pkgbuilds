@@ -1,0 +1,49 @@
+pkgname=cbcutycapt-git
+pkgver=10
+pkgrel=1
+pkgdesc="A Qt and WebKit based command-line utility that captures WebKit's rendering of a web page."
+arch=('any')
+url="https://github.com/cblabs/cbcutycapt"
+license=('GPL')
+depends=('qtwebkit')
+makedepends=('git')
+provides=('cutycapt')
+conflicts=('cutycapt')
+_gitroot="git://github.com/cblabs/cbcutycapt.git"
+_gitname="cbcutycapt"
+source=('git://github.com/cblabs/cbcutycapt.git'
+        'cutycapt.patch')
+md5sums=('SKIP'
+         'cdc341ce9911621e4002eb559e83f79e')
+build() {
+
+  cd "$srcdir"
+  msg "Connecting to GIT server...."
+
+  if [ -d $_gitname ] ; then
+    cd $_gitname && git pull origin
+    msg "The local files are updated."
+  else
+    git clone $_gitroot $_gitname
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf "$srcdir/$_gitname-build"
+  git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+
+  # Patch
+  patch --binary -Np0 < "${srcdir}/cutycapt.patch"
+
+  # Build
+  qmake-qt4
+  make
+}
+
+package() {
+  cd "$srcdir/$_gitname-build"
+	install -m755 -d "${pkgdir}/usr/bin"
+	install -m755 "CutyCapt" "${pkgdir}/usr/bin/"
+}
